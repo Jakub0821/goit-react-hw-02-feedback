@@ -1,4 +1,4 @@
-import Section from 'components/Section/Section';
+import Section from 'components/Section/Section.jsx';
 import Component  from 'react';
 import PropTypes from 'prop-types';
 
