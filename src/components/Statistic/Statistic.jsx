@@ -1,4 +1,4 @@
-import styles from './Statistics.module.css';
+import styles from './Statistic.module.css';
 
 const { Component } = require('react');
 

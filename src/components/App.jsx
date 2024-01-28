@@ -1,36 +1,60 @@
-import Section from 'components/Section/Section.jsx';
-import Component  from 'react';
-import PropTypes from 'prop-types';
+import Component from 'react';
+import Section from './Section/Section.jsx';
+import FeedbackOptions from './FeedbackOptions/FeedbackOptions.jsx';
+import Notification from './Notification/Notification.jsx';
+import Statistics from './Statistic/Statistic.jsx';
+import styles from './App.module.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      good: props.initialGood,
-      neutral: props.initialNeutral,
-      bad: props.initialBad,
-    };
-  }
-
-  static defaultProps = {
-    step: 1,
-    initialGood: 0,
-    initialNeutral: 0,
-    initialBad: 0,
+  initialValue = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
-  static propTypes = {
-    step: PropTypes.number,
-    initialGood: PropTypes.number,
-    initialNeutral: PropTypes.number,
-    initialBad: PropTypes.number,
+  state = {
+    ...this.initialValue,
+  };
+
+  sumTotal() {
+    return this.state.good + this.state.neutral + this.state.bad;
+  }
+
+  positivePercentage() {
+    return (this.state.good / this.sumTotal()) * 100;
+  }
+
+  handleFeedback = button => {
+    const { textContent } = button.target;
+    const name = textContent.toLowerCase();
+    this.setState(prevState => {
+      return { [name]: prevState[name] + 1 };
+    });
   };
 
   render() {
     return (
-      <>
-        <Section title="Please leave feedback" state={this.state}/>
-      </>
+      <div className={styles.container}>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={this.state}
+            onLeaveFeedback={this.handleFeedback}
+          />
+        </Section>
+        <Section title="Statistics">
+          {this.sumTotal() === 0 ? (
+            <Notification>No feedback given</Notification>
+          ) : (
+            <Statistics
+              good={this.state.good}
+              neutral={this.state.neutral}
+              bad={this.state.bad}
+              total={this.sumTotal()}
+              positivePercentage={Math.round(this.positivePercentage()) + '%'}
+            />
+          )}
+        </Section>
+      </div>
     );
   }
 }
